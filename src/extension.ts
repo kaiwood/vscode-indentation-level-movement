@@ -7,23 +7,100 @@ import * as vscode from 'vscode';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "linejump" is now active!');
-
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-        // The code you place here will be executed every time your command is executed
-
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
+    let moveDown = vscode.commands.registerCommand('extension.moveDown', () => {
+        moveDownUntilCharClassChanges();
     });
 
-    context.subscriptions.push(disposable);
+    let moveUp = vscode.commands.registerCommand('extension.moveUp', () => {
+        moveUpUntilCharClassChanges();
+    });
+
+    context.subscriptions.push(moveDown);
+    context.subscriptions.push(moveUp);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
+}
+
+function charBeforeCursor() {
+    let selection = vscode.window.activeTextEditor.selection;
+
+    let endPosition = new vscode.Position(selection.end.line, selection.end.character + 1);
+    let range = new vscode.Range(selection.start, endPosition);
+
+    let char = vscode.window.activeTextEditor.document.getText(range)
+    return char;
+}
+
+function nextCharBeforeCursor() {
+    let selection = vscode.window.activeTextEditor.selection;
+
+    let startPosition = new vscode.Position(selection.start.line + 1, selection.start.character);
+    let endPosition = new vscode.Position(selection.end.line + 1, selection.end.character + 1);
+    let range = new vscode.Range(startPosition, endPosition);
+
+    let char = vscode.window.activeTextEditor.document.getText(range)
+    return char;
+}
+
+function previousCharBeforeCursor() {
+    let selection = vscode.window.activeTextEditor.selection;
+
+    let startPosition = new vscode.Position(selection.start.line - 1, selection.start.character);
+    let endPosition = new vscode.Position(selection.end.line - 1, selection.end.character + 1);
+    let range = new vscode.Range(startPosition, endPosition);
+
+    let char = vscode.window.activeTextEditor.document.getText(range)
+    return char;
+}
+
+function isWhitespace(char) {
+    return char.search(/\w/) >= 0 ? false : true
+}
+
+function moveDownUntilCharClassChanges() {
+    if (isWhitespace(charBeforeCursor()) && isWhitespace(nextCharBeforeCursor())) {
+
+        vscode.commands.executeCommand("cursorDown").then(function () {
+            moveDownUntilCharClassChanges();
+        });
+
+    } else if (!isWhitespace(charBeforeCursor()) && !isWhitespace(nextCharBeforeCursor())) {
+
+        vscode.commands.executeCommand("cursorDown").then(function () {
+            moveDownUntilCharClassChanges();
+        });
+
+    } else if (!isWhitespace(charBeforeCursor()) && isWhitespace(nextCharBeforeCursor())) {
+
+        vscode.commands.executeCommand("cursorDown").then(function () {
+            moveDownUntilCharClassChanges();
+        });
+
+    } else if (isWhitespace(charBeforeCursor()) && !isWhitespace(nextCharBeforeCursor())) {
+
+        vscode.commands.executeCommand("cursorDown")
+
+    }
+}
+
+function moveUpUntilCharClassChanges() {
+    if (isWhitespace(charBeforeCursor()) && isWhitespace(previousCharBeforeCursor())) {
+
+        vscode.commands.executeCommand("cursorUp").then(function () {
+            moveUpUntilCharClassChanges();
+        });
+
+    } else if (!isWhitespace(charBeforeCursor()) && !isWhitespace(previousCharBeforeCursor())) {
+
+        vscode.commands.executeCommand("cursorUp").then(function () {
+            moveUpUntilCharClassChanges();
+        });
+
+    } else if (isWhitespace(charBeforeCursor()) && !isWhitespace(previousCharBeforeCursor())) {
+
+        vscode.commands.executeCommand("cursorUp")
+
+    }
 }
