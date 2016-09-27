@@ -105,6 +105,7 @@ function moveDownUntilCharClassChanges() {
     movesDownAtBlock = false;
 }
 
+let movesUpAtBlock = false;
 function moveUpUntilCharClassChanges() {
     if (isFirstLine()) {
         return;
@@ -113,18 +114,30 @@ function moveUpUntilCharClassChanges() {
     if (isWhitespace(charBeforeCursor()) && isWhitespace(previousCharBeforeCursor())) {
 
         vscode.commands.executeCommand("cursorUp").then(function () {
+            movesUpAtBlock = true;
             moveUpUntilCharClassChanges();
         });
 
     } else if (!isWhitespace(charBeforeCursor()) && !isWhitespace(previousCharBeforeCursor())) {
 
         vscode.commands.executeCommand("cursorUp").then(function () {
+            movesUpAtBlock = true;
+            moveUpUntilCharClassChanges();
+        });
+
+    } else if (!isWhitespace(charBeforeCursor()) && isWhitespace(previousCharBeforeCursor()) && !movesUpAtBlock) {
+
+        vscode.commands.executeCommand("cursorUp").then(function () {
+            movesUpAtBlock = true;
             moveUpUntilCharClassChanges();
         });
 
     } else if (isWhitespace(charBeforeCursor()) && !isWhitespace(previousCharBeforeCursor())) {
 
+        movesUpAtBlock = false;
         vscode.commands.executeCommand("cursorUp")
 
     }
+
+    movesUpAtBlock = false;
 }
