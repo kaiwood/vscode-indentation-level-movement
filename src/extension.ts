@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
 
     let moveDown = vscode.commands.registerCommand('extension.moveDown', () => {
-        moveDownUntilCharClassChanges();
+        moveDownUntilCharClassChanges();   
     });
 
     let moveUp = vscode.commands.registerCommand('extension.moveUp', () => {
@@ -59,7 +59,21 @@ function isWhitespace(char) {
     return char.search(/\w/) >= 0 ? false : true
 }
 
+function isLastLine() {
+    let lineCount = vscode.window.activeTextEditor.document.lineCount
+    let currentLineNumber = vscode.window.activeTextEditor.selection.end.line + 1
+    return lineCount === currentLineNumber ? true : false;
+}
+
+function isFirstLine() {
+    return vscode.window.activeTextEditor.selection.end.line === 0 ? true : false
+}
+
 function moveDownUntilCharClassChanges() {
+    if (isLastLine()) {
+        return;
+    }
+
     if (isWhitespace(charBeforeCursor()) && isWhitespace(nextCharBeforeCursor())) {
 
         vscode.commands.executeCommand("cursorDown").then(function () {
@@ -86,6 +100,10 @@ function moveDownUntilCharClassChanges() {
 }
 
 function moveUpUntilCharClassChanges() {
+    if (isFirstLine()) {
+        return;
+    }
+
     if (isWhitespace(charBeforeCursor()) && isWhitespace(previousCharBeforeCursor())) {
 
         vscode.commands.executeCommand("cursorUp").then(function () {
