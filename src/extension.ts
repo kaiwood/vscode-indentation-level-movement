@@ -69,6 +69,7 @@ function isFirstLine() {
     return vscode.window.activeTextEditor.selection.end.line === 0 ? true : false
 }
 
+let movesDownAtBlock = false;
 function moveDownUntilCharClassChanges() {
     if (isLastLine()) {
         return;
@@ -77,26 +78,31 @@ function moveDownUntilCharClassChanges() {
     if (isWhitespace(charBeforeCursor()) && isWhitespace(nextCharBeforeCursor())) {
 
         vscode.commands.executeCommand("cursorDown").then(function () {
+            movesDownAtBlock = true;
             moveDownUntilCharClassChanges();
         });
 
     } else if (!isWhitespace(charBeforeCursor()) && !isWhitespace(nextCharBeforeCursor())) {
 
         vscode.commands.executeCommand("cursorDown").then(function () {
+            movesDownAtBlock = true;
             moveDownUntilCharClassChanges();
         });
 
-    } else if (!isWhitespace(charBeforeCursor()) && isWhitespace(nextCharBeforeCursor())) {
+    } else if (!isWhitespace(charBeforeCursor()) && isWhitespace(nextCharBeforeCursor()) && !movesDownAtBlock) {
 
         vscode.commands.executeCommand("cursorDown").then(function () {
+            movesDownAtBlock = true;
             moveDownUntilCharClassChanges();
         });
 
     } else if (isWhitespace(charBeforeCursor()) && !isWhitespace(nextCharBeforeCursor())) {
-
+        movesDownAtBlock = false;
         vscode.commands.executeCommand("cursorDown")
 
     }
+
+    movesDownAtBlock = false;
 }
 
 function moveUpUntilCharClassChanges() {
