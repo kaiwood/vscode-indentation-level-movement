@@ -47,9 +47,14 @@ class IndentationLevelMover {
 
         let currentLineNumber = editor.selection.start.line;
         let currentLevel = this.indentationLevelForLine(currentLineNumber);
-
         let position = editor.selection.active;
-        let newPosition = position.with(this.findNextLine(currentLineNumber, currentLevel), currentLevel);
+        let nextLine = this.findNextLine(currentLineNumber, currentLevel)
+
+        if (currentLevel < 0) {
+            currentLevel = 0;
+        }
+
+        let newPosition = position.with(nextLine, currentLevel);
         let selection = new Selection(newPosition, newPosition);
         editor.selection = selection;
     }
@@ -97,11 +102,6 @@ class IndentationLevelMover {
                 changedAtFirstCheckedLine = true;
             }
 
-            // Don't count blank/empty lines
-            if (indentationForLine < 0) {
-                continue;
-            }
-
             if (changedAtFirstCheckedLine){
                 changedAtFirstCheckedLine = false;
                 indentationLevelToSearchFor = indentationForLine;
@@ -109,7 +109,7 @@ class IndentationLevelMover {
             }
 
             if (indentationChanged && indentationForLine !== indentationLevelToSearchFor) {
-                if (currentIndentationLevel !== indentationLevelToSearchFor) {
+                if (currentIndentationLevel !== indentationLevelToSearchFor || currentIndentationLevel < 0) {
                     return lineNumber
                 } else {
                     return lineNumber - 1;
