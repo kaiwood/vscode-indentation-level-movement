@@ -20,11 +20,11 @@ import {
 export function activate(context: ExtensionContext) {
     let indentationLevelMover = new IndentationLevelMover();
 
-    var moveDown = commands.registerCommand('extension.moveDown', () => {
+    var moveDown = commands.registerCommand('indentation-level-movement.moveDown', () => {
         indentationLevelMover.moveDown();
     });
 
-    var moveUp = commands.registerCommand('extension.moveUp', () => {
+    var moveUp = commands.registerCommand('indentation-level-movement.moveUp', () => {
         indentationLevelMover.moveUp();
     })
 
