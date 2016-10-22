@@ -4,6 +4,7 @@
     "description": "Fast and efficient vertical movement.",
     "version": "0.1.0",
     "publisher": "kaiwood",
+    "icon": "images/indentation-level-movement-icon.png",
     "license": "MIT",
     "bugs": "https://github.com/kaiwood/vscode-indentation-level-movement/issues",
     "repository": {
