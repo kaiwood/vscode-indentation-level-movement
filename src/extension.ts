@@ -46,15 +46,13 @@ class IndentationLevelMover {
         }
 
         let currentLineNumber = editor.selection.start.line;
+        let currentCharacter = editor.selection.start.character;
+
         let currentLevel = this.indentationLevelForLine(currentLineNumber);
         let position = editor.selection.active;
         let nextLine = this.findNextLine(currentLineNumber, currentLevel)
 
-        if (currentLevel < 0) {
-            currentLevel = 0;
-        }
-
-        let newPosition = position.with(nextLine, currentLevel);
+        let newPosition = position.with(nextLine, currentCharacter);
         let selection = new Selection(newPosition, newPosition);
         editor.selection = selection;
     }
