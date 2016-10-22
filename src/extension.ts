@@ -39,24 +39,6 @@ export function deactivate() {
 
 
 class IndentationLevelMover {
-    public moveDown() {
-        let editor = window.activeTextEditor;
-        if (!editor) {
-            return;
-        }
-
-        let currentLineNumber = editor.selection.start.line;
-        let currentCharacter = editor.selection.start.character;
-
-        let currentLevel = this.indentationLevelForLine(currentLineNumber);
-        let position = editor.selection.active;
-        let nextLine = this.findNextLine(currentLineNumber, currentLevel)
-
-        let newPosition = position.with(nextLine, currentCharacter);
-        let selection = new Selection(newPosition, newPosition);
-        editor.selection = selection;
-    }
-
     public moveUp() {
         let editor = window.activeTextEditor;
         if (!editor) {
@@ -65,10 +47,33 @@ class IndentationLevelMover {
 
         let currentLineNumber = editor.selection.start.line;
         let currentLevel = this.indentationLevelForLine(currentLineNumber);
+        let nextLine = this.findPreviousLine(currentLineNumber, currentLevel);
 
+        this.move(nextLine);
+    }
+
+    public moveDown() {
+        let editor = window.activeTextEditor;
+        if (!editor) {
+            return;
+        }
+
+        let currentLineNumber = editor.selection.start.line;
+        let currentLevel = this.indentationLevelForLine(currentLineNumber);
+        let nextLine = this.findNextLine(currentLineNumber, currentLevel);
+
+        this.move(nextLine);
+    }
+
+    public move(toLine) {
+        let editor = window.activeTextEditor;
+
+        let currentLineNumber = editor.selection.start.line;
+        let currentCharacter = editor.selection.start.character;
         let position = editor.selection.active;
-        let newPosition = position.with(this.findPreviousLine(currentLineNumber, currentLevel), currentLevel);
+        let newPosition = position.with(toLine, currentCharacter);
         let selection = new Selection(newPosition, newPosition);
+
         editor.selection = selection;
     }
 
