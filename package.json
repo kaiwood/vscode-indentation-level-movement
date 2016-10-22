@@ -26,10 +26,12 @@
         "keybindings": [{
             "command": "extension.moveDown",
             "key": "ctrl-down",
+            "mac": "alt-down",
             "when": "editorTextFocus"
         }, {
             "command": "extension.moveUp",
             "key": "ctrl-up",
+            "mac": "alt-up",
             "when": "editorTextFocus"
 
         }]
