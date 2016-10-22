@@ -1,9 +1,15 @@
 {
-    "name": "linejump",
-    "displayName": "linejump",
-    "description": "Effective line navigation",
-    "version": "0.0.1",
+    "name": "indentation-level-movement",
+    "displayName": "Indentation Level Movement",
+    "description": "Fast and efficient vertical movement.",
+    "version": "0.1.0",
     "publisher": "kaiwood",
+    "license": "MIT",
+    "bugs": "https://github.com/kaiwood/vscode-indentation-level-movement/issues",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kaiwood/vscode-indentation-level-movement"
+    },
     "engines": {
         "vscode": "^1.5.0"
     },
@@ -11,25 +17,25 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.moveDown",
-        "onCommand:extension.moveUp"
+        "onCommand:indentation-level-movement.moveDown",
+        "onCommand:indentation-level-movement.moveUp"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
-            "command": "extension.moveDown",
+            "command": "indentation-level-movement.moveDown",
             "title": "Semantic Down"
         }, {
-            "command": "extension.moveUp",
+            "command": "indentation-level-movement.moveUp",
             "title": "Semantic Up"
         }],
         "keybindings": [{
-            "command": "extension.moveDown",
+            "command": "indentation-level-movement.moveDown",
             "key": "ctrl-down",
             "mac": "alt-down",
             "when": "editorTextFocus"
         }, {
-            "command": "extension.moveUp",
+            "command": "indentation-level-movement.moveUp",
             "key": "ctrl-up",
             "mac": "alt-up",
             "when": "editorTextFocus"
