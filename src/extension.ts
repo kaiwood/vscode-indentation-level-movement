@@ -116,6 +116,8 @@ class IndentationLevelMover {
                 }
             }
         }
+
+        return editor.document.lineCount - 1;
     }
 
     public findPreviousLine(currentLineNumber, currentIndentationLevel: Number) {
