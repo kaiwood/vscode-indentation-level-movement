@@ -127,11 +127,12 @@ class IndentationLevelMover {
         let editor = window.activeTextEditor;
         let indentationChanged = false;
         let changedAtFirstCheckedLine = false;
+        let indentationLevelToSearchFor = currentIndentationLevel;
 
-        for (let lineNumber = currentLineNumber + 1; lineNumber > 0; lineNumber--) {
+        for (let lineNumber = currentLineNumber - 1; lineNumber > 0; lineNumber--) {
             let indentationForLine = this.indentationLevelForLine(lineNumber);
 
-            if (currentIndentationLevel !== indentationForLine) {
+            if (indentationLevelToSearchFor !== indentationForLine) {
                 indentationChanged = true;
             }
 
@@ -139,15 +140,22 @@ class IndentationLevelMover {
                 changedAtFirstCheckedLine = true;
             }
 
-            // Don't count blank/empty lines
-            if (indentationForLine < 0) {
+            if (changedAtFirstCheckedLine){
+                changedAtFirstCheckedLine = false;
+                indentationLevelToSearchFor = indentationForLine;
                 continue;
             }
 
-            if (indentationChanged && indentationForLine <= currentIndentationLevel) {
-                return changedAtFirstCheckedLine ? lineNumber : lineNumber - 1;
+            if (indentationChanged && indentationForLine !== indentationLevelToSearchFor) {
+                if (currentIndentationLevel !== indentationLevelToSearchFor || currentIndentationLevel < 0) {
+                    return lineNumber
+                } else {
+                    return lineNumber + 1;
+                }
             }
         }
+
+        return 0;
     }
 
     dispose() {
