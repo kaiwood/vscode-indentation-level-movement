@@ -84,11 +84,12 @@ class IndentationLevelMover {
         let editor = window.activeTextEditor;
         let indentationChanged = false;
         let changedAtFirstCheckedLine = false;
+        let indentationLevelToSearchFor = currentIndentationLevel;
 
         for (let lineNumber = currentLineNumber + 1; lineNumber < editor.document.lineCount; lineNumber++) {
             let indentationForLine = this.indentationLevelForLine(lineNumber);
 
-            if (currentIndentationLevel !== indentationForLine) {
+            if (indentationLevelToSearchFor !== indentationForLine) {
                 indentationChanged = true;
             }
 
@@ -101,8 +102,18 @@ class IndentationLevelMover {
                 continue;
             }
 
-            if (indentationChanged && indentationForLine <= currentIndentationLevel) {
-                return changedAtFirstCheckedLine ? lineNumber : lineNumber - 1;
+            if (changedAtFirstCheckedLine){
+                changedAtFirstCheckedLine = false;
+                indentationLevelToSearchFor = indentationForLine;
+                continue;
+            }
+
+            if (indentationChanged && indentationForLine !== indentationLevelToSearchFor) {
+                if (currentIndentationLevel !== indentationLevelToSearchFor) {
+                    return lineNumber
+                } else {
+                    return lineNumber - 1;
+                }
             }
         }
     }
