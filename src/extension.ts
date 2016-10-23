@@ -92,6 +92,10 @@ class IndentationLevelMover {
     public findNextLine(currentLineNumber, currentIndentationLevel: Number) {
         let editor = window.activeTextEditor;
 
+        if (currentLineNumber === editor.document.lineCount - 1) {
+            return;
+        }
+
         var gap = (this.indentationLevelForLine(currentLineNumber+1) !== currentIndentationLevel ? true : false)
 
         for (let lineNumber = currentLineNumber + 1; lineNumber < editor.document.lineCount; lineNumber++) {
@@ -109,6 +113,11 @@ class IndentationLevelMover {
 
     public findPreviousLine(currentLineNumber, currentIndentationLevel: Number) {
         let editor = window.activeTextEditor;
+
+        if (currentLineNumber === 0) {
+            return;
+        }
+
         var gap = (this.indentationLevelForLine(currentLineNumber-1) !== currentIndentationLevel ? true : false)
 
         for (let lineNumber = currentLineNumber - 1; lineNumber > 0; lineNumber--) {
