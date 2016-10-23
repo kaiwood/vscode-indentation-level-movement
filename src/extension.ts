@@ -75,6 +75,7 @@ class IndentationLevelMover {
         let selection = new Selection(newPosition, newPosition);
 
         editor.selection = selection;
+        editor.revealRange(new Range(newPosition, newPosition));
     }
 
     public indentationLevelForLine(lineToCheck) {
