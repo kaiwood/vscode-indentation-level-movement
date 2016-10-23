@@ -8,6 +8,10 @@ Default shortcuts are alt+up / alt+down on macOS and ctrl+up / ctrl+down on Wind
 
 ## Release Notes
 
+### 0.2.0
+
+Use more precise algorithm to handle nested intentations
+
 ### 0.1.0
 
 Initial release
