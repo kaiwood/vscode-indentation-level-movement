@@ -8,6 +8,10 @@ Default shortcuts are alt+up / alt+down on macOS and ctrl+up / ctrl+down on Wind
 
 ## Release Notes
 
+### 0.3.0
+
+Scroll to cursor if movies out of the viewport
+
 ### 0.2.0
 
 Use more precise algorithm to handle nested intentations
