@@ -90,33 +90,16 @@ class IndentationLevelMover {
 
     public findNextLine(currentLineNumber, currentIndentationLevel: Number) {
         let editor = window.activeTextEditor;
-        let indentationChanged = false;
-        let changedAtFirstCheckedLine = false;
-        let indentationLevelToSearchFor = currentIndentationLevel;
+
+        var gap = (this.indentationLevelForLine(currentLineNumber+1) !== currentIndentationLevel ? true : false)
 
         for (let lineNumber = currentLineNumber + 1; lineNumber < editor.document.lineCount; lineNumber++) {
             let indentationForLine = this.indentationLevelForLine(lineNumber);
 
-            if (indentationLevelToSearchFor !== indentationForLine) {
-                indentationChanged = true;
-            }
-
-            if (indentationChanged && lineNumber === currentLineNumber + 1) {
-                changedAtFirstCheckedLine = true;
-            }
-
-            if (changedAtFirstCheckedLine){
-                changedAtFirstCheckedLine = false;
-                indentationLevelToSearchFor = indentationForLine;
-                continue;
-            }
-
-            if (indentationChanged && indentationForLine !== indentationLevelToSearchFor) {
-                if (currentIndentationLevel !== indentationLevelToSearchFor || currentIndentationLevel < 0) {
-                    return lineNumber
-                } else {
-                    return lineNumber - 1;
-                }
+            if (gap && indentationForLine === currentIndentationLevel) {
+                return lineNumber;
+            } else if ((!gap) && indentationForLine !== currentIndentationLevel) {
+                return lineNumber - 1;
             }
         }
 
@@ -125,33 +108,15 @@ class IndentationLevelMover {
 
     public findPreviousLine(currentLineNumber, currentIndentationLevel: Number) {
         let editor = window.activeTextEditor;
-        let indentationChanged = false;
-        let changedAtFirstCheckedLine = false;
-        let indentationLevelToSearchFor = currentIndentationLevel;
+        var gap = (this.indentationLevelForLine(currentLineNumber-1) !== currentIndentationLevel ? true : false)
 
         for (let lineNumber = currentLineNumber - 1; lineNumber > 0; lineNumber--) {
             let indentationForLine = this.indentationLevelForLine(lineNumber);
 
-            if (indentationLevelToSearchFor !== indentationForLine) {
-                indentationChanged = true;
-            }
-
-            if (indentationChanged && lineNumber === currentLineNumber - 1) {
-                changedAtFirstCheckedLine = true;
-            }
-
-            if (changedAtFirstCheckedLine){
-                changedAtFirstCheckedLine = false;
-                indentationLevelToSearchFor = indentationForLine;
-                continue;
-            }
-
-            if (indentationChanged && indentationForLine !== indentationLevelToSearchFor) {
-                if (currentIndentationLevel !== indentationLevelToSearchFor || currentIndentationLevel < 0) {
-                    return lineNumber
-                } else {
-                    return lineNumber + 1;
-                }
+            if (gap && indentationForLine === currentIndentationLevel) {
+                return lineNumber;
+            } else if ((!gap) && indentationForLine !== currentIndentationLevel) {
+                return lineNumber + 1;
             }
         }
 
