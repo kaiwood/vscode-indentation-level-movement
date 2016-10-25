@@ -10,7 +10,7 @@ Default shortcuts are alt+up / alt+down on macOS and ctrl+up / ctrl+down on Wind
 
 ### 0.3.0
 
-Scroll to cursor if movies out of the viewport
+Scroll to cursor if it moves out of the viewport
 
 ### 0.2.0
 
