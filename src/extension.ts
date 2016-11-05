@@ -26,11 +26,21 @@ export function activate(context: ExtensionContext) {
 
     var moveUp = commands.registerCommand('indentation-level-movement.moveUp', () => {
         indentationLevelMover.moveUp();
-    })
+    });
+
+    var selectDown = commands.registerCommand('indentation-level-movement.selectDown', () => {
+        indentationLevelMover.selectDown();
+    });
+
+    var selectUp = commands.registerCommand('indentation-level-movement.selectUp', () => {
+        indentationLevelMover.selectUp();
+    });
 
     context.subscriptions.push(indentationLevelMover);
     context.subscriptions.push(moveDown);
     context.subscriptions.push(moveUp);
+    context.subscriptions.push(selectDown);
+    context.subscriptions.push(selectUp);
 }
 
 // this method is called when your extension is deactivated
@@ -63,6 +73,29 @@ class IndentationLevelMover {
         let nextLine = this.findNextLine(currentLineNumber, currentLevel);
 
         this.move(nextLine);
+    }
+
+    public selectUp() {
+        let editor = window.activeTextEditor;
+        if (!editor) {
+            return;
+        }
+        let startPoint = editor.selection.start;
+        this.moveUp();
+        let endPoint = editor.selection.end;
+        editor.selection = new Selection(startPoint, endPoint);
+    }
+
+    public selectDown() {
+        let editor = window.activeTextEditor;
+        if (!editor) {
+            return;
+        }
+
+        let startPoint = editor.selection.start;
+        this.moveDown();
+        let endPoint = editor.selection.end;
+        editor.selection = new Selection(startPoint, endPoint);
     }
 
     public move(toLine) {

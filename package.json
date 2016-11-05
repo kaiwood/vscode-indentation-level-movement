@@ -29,6 +29,12 @@
         }, {
             "command": "indentation-level-movement.moveUp",
             "title": "Indentation Level Move Up"
+        }, {
+            "command": "indentation-level-movement.selectDown",
+            "title": "Indentation Level Select Down"
+        }, {
+            "command": "indentation-level-movement.selectUp",
+            "title": "Indentation Level Select Up"
         }],
         "keybindings": [{
             "command": "indentation-level-movement.moveDown",
@@ -41,6 +47,14 @@
             "mac": "alt-up",
             "when": "editorTextFocus"
 
+        }, {
+            "command": "indentation-level-movement.selectDown",
+            "key": "ctrl-shift-down",
+            "mac": "alt-shift-down"
+        }, {
+            "command": "indentation-level-movement.selectUp",
+            "key": "ctrl-shift-up",
+            "mac": "alt-shift-up"
         }]
     },
     "scripts": {
