@@ -25,10 +25,10 @@
     "contributes": {
         "commands": [{
             "command": "indentation-level-movement.moveDown",
-            "title": "Semantic Down"
+            "title": "Indentation Level Move Down"
         }, {
             "command": "indentation-level-movement.moveUp",
-            "title": "Semantic Up"
+            "title": "Indentation Level Move Up"
         }],
         "keybindings": [{
             "command": "indentation-level-movement.moveDown",
