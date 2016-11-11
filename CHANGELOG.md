@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.0.2
+
+Bugfix: Extension didn't activate when using the selection commands.
+
 ## 1.0.0
 
 The missing piece: Selections!

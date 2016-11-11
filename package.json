@@ -2,7 +2,7 @@
     "name": "indentation-level-movement",
     "displayName": "Indentation Level Movement",
     "description": "Fast and efficient vertical movement.",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "publisher": "kaiwood",
     "icon": "images/indentation-level-movement-icon.png",
     "license": "MIT",
@@ -19,7 +19,9 @@
     ],
     "activationEvents": [
         "onCommand:indentation-level-movement.moveDown",
-        "onCommand:indentation-level-movement.moveUp"
+        "onCommand:indentation-level-movement.moveUp",
+        "onCommand:indentation-level-movement.selectDown",
+        "onCommand:indentation-level-movement.selectUp"
     ],
     "main": "./out/src/extension",
     "contributes": {
