@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.1.0
+
+Introduce moveRight command: If the cursor is somewhere left of the indentation level of the current line, moving wordwise (alt+right / ctrl+right) now stops at the indentation level,
+not at the end of the first word.
+
 ## 1.0.2
 
 Bugfix: Extension didn't activate when using the selection commands.

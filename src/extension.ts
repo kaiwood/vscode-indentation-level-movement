@@ -28,6 +28,10 @@ export function activate(context: ExtensionContext) {
         indentationLevelMover.moveUp();
     });
 
+    var moveRight = commands.registerCommand('indentation-level-movement.moveRight', () => {
+        indentationLevelMover.moveRight();
+    });
+
     var selectDown = commands.registerCommand('indentation-level-movement.selectDown', () => {
         indentationLevelMover.selectDown();
     });
@@ -39,6 +43,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(indentationLevelMover);
     context.subscriptions.push(moveDown);
     context.subscriptions.push(moveUp);
+    context.subscriptions.push(moveRight);
     context.subscriptions.push(selectDown);
     context.subscriptions.push(selectUp);
 }
@@ -73,6 +78,23 @@ class IndentationLevelMover {
         let nextLine = this.findNextLine(currentLineNumber, currentLevel);
 
         this.move(nextLine);
+    }
+
+    public moveRight() {
+        let editor = window.activeTextEditor;
+        if (!editor) {
+            return;
+        }
+
+        let currentPosition = editor.selection.active.character;
+        let indentationPosition = this.indentationLevelForLine(editor.selection.start.line);
+
+        if (currentPosition < indentationPosition) {
+            let position = new Position(editor.selection.active.line, indentationPosition);
+            editor.selection = new Selection(position, position);
+        } else {
+            commands.executeCommand('cursorWordEndRight');
+        }
     }
 
     public selectUp() {

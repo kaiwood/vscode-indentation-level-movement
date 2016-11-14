@@ -2,7 +2,7 @@
     "name": "indentation-level-movement",
     "displayName": "Indentation Level Movement",
     "description": "Fast and efficient vertical movement.",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "publisher": "kaiwood",
     "icon": "images/indentation-level-movement-icon.png",
     "license": "MIT",
@@ -20,6 +20,7 @@
     "activationEvents": [
         "onCommand:indentation-level-movement.moveDown",
         "onCommand:indentation-level-movement.moveUp",
+        "onCommand:indentation-level-movement.moveRight",
         "onCommand:indentation-level-movement.selectDown",
         "onCommand:indentation-level-movement.selectUp"
     ],
@@ -31,6 +32,9 @@
         }, {
             "command": "indentation-level-movement.moveUp",
             "title": "Indentation Level Move Up"
+        }, {
+            "command": "indentation-level-movement.moveRight",
+            "title": "Indentation Level Move Right"
         }, {
             "command": "indentation-level-movement.selectDown",
             "title": "Indentation Level Select Down"
@@ -49,6 +53,11 @@
             "mac": "alt-up",
             "when": "editorTextFocus"
 
+        }, {
+            "command": "indentation-level-movement.moveRight",
+            "key": "ctrl-right",
+            "mac": "alt-right",
+            "when": "editorTextFocus"
         }, {
             "command": "indentation-level-movement.selectDown",
             "key": "ctrl-shift-down",
