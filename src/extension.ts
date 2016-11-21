@@ -90,8 +90,14 @@ class IndentationLevelMover {
         let indentationPosition = this.indentationLevelForLine(editor.selection.start.line);
 
         if (currentPosition < indentationPosition) {
-            let position = new Position(editor.selection.active.line, indentationPosition);
-            editor.selection = new Selection(position, position);
+            if (editor.selections.length > 1) {
+                commands.executeCommand('cursorWordEndRight').then(() => {
+                    commands.executeCommand('cursorWordStartLeft');
+                });
+            } else {
+                let position = new Position(editor.selection.active.line, indentationPosition);
+                editor.selection = new Selection(position, position);
+            }
         } else {
             commands.executeCommand('cursorWordEndRight');
         }
