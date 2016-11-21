@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.1.1
+
+Bugfix: Handle multiple cursors correctly when moving to the right
+
 ## 1.1.0
 
 Introduce moveRight command: If the cursor is somewhere left of the indentation level of the current line, moving wordwise (alt+right / ctrl+right) now stops at the indentation level,
