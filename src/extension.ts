@@ -156,8 +156,7 @@ class IndentationLevelMover {
     let editor = window.activeTextEditor;
     let line = editor.document.lineAt(lineToCheck);
 
-    // TODO: check for whitespace-only lines as well
-    if (line.text.toString().length === 0) {
+    if (line.text.toString().trimEnd().length === 0) {
       return -1;
     } else {
       return line.firstNonWhitespaceCharacterIndex;
