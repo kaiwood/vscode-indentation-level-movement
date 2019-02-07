@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.2.0
+
+When determining the indentation level, ignore lines containing only whitespace (#2)
+
 ## 1.1.1
 
 Bugfix: Handle multiple cursors correctly when moving to the right
