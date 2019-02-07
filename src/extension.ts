@@ -5,11 +5,7 @@
 import {
   window,
   commands,
-  Disposable,
   ExtensionContext,
-  StatusBarAlignment,
-  StatusBarItem,
-  TextDocument,
   Position,
   Range,
   Selection
@@ -147,7 +143,6 @@ class IndentationLevelMover {
   public move(toLine) {
     let editor = window.activeTextEditor;
 
-    let currentLineNumber = editor.selection.start.line;
     let currentCharacter = editor.selection.start.character;
     let position = editor.selection.active;
     let newPosition = position.with(toLine, currentCharacter);
