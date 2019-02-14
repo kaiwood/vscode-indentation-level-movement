@@ -11,6 +11,7 @@
 	  "type": "git",
 	  "url": "https://github.com/kaiwood/vscode-indentation-level-movement"
 	},
+	"contributors": ["bluemonkmn"],
 	"engines": {
 		"vscode": "^1.31.0"
 	},
