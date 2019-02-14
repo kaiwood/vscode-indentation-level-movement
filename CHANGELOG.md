@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.3.0
+
+Add Indentation Level Move Out command to jump to parent line above with Alt-[.
+Update extension API version/code.
+
 ## 1.2.0
 
 When determining the indentation level, ignore lines containing only whitespace (#2)
