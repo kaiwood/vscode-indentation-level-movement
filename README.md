@@ -1,6 +1,8 @@
-# Indentation Level Movement
+# Indentation Level Movement2
 
 Provides commands and keyboard shortcuts to jump the cursor with or without selection vertically based on indentation levels.
+
+The original author stopped providing updates or merging Pull Requests, so this fork was made to keep this useful plugin up to date.
 
 ## Features
 

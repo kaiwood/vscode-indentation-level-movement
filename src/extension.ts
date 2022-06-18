@@ -1,7 +1,5 @@
-"use strict";
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-// import * as vscode from 'vscode';
+'use strict';
+
 import {
   window,
   commands,
@@ -10,57 +8,53 @@ import {
   Range,
   Selection,
   TextEditor
-} from "vscode";
-import { isNumber } from "util";
+} from 'vscode';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext) {
-  let indentationLevelMover = new IndentationLevelMover();
-
-  var moveDown = commands.registerCommand(
-    "indentation-level-movement.moveDown",
-    () => {
-      indentationLevelMover.moveDown();
+  const moveDown = commands.registerCommand('indentation-level-movement.moveDown', () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      new IndentationLevelMover(editor).moveDown();
     }
-  );
+  });
 
-  var moveUp = commands.registerCommand(
-    "indentation-level-movement.moveUp",
-    () => {
-      indentationLevelMover.moveUp();
+  const moveUp = commands.registerCommand('indentation-level-movement.moveUp', () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      new IndentationLevelMover(editor).moveUp();
     }
-  );
+  });
 
-  var moveRight = commands.registerCommand(
-    "indentation-level-movement.moveRight",
-    () => {
-      indentationLevelMover.moveRight();
+  const moveRight = commands.registerCommand('indentation-level-movement.moveRight', () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      new IndentationLevelMover(editor).moveRight();
     }
-  );
+  });
 
-  var moveOut = commands.registerCommand(
-    "indentation-level-movement.moveOut",
-    () => {
-      indentationLevelMover.moveOut();
+  var moveOut = commands.registerCommand("indentation-level-movement.moveOut", () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      new IndentationLevelMover(editor).moveOut();
     }
-  );
+  });
 
-  var selectDown = commands.registerCommand(
-    "indentation-level-movement.selectDown",
-    () => {
-      indentationLevelMover.selectDown();
+  const selectDown = commands.registerCommand('indentation-level-movement.selectDown', () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      new IndentationLevelMover(editor).selectDown();
     }
-  );
+  });
 
-  var selectUp = commands.registerCommand(
-    "indentation-level-movement.selectUp",
-    () => {
-      indentationLevelMover.selectUp();
+  const selectUp = commands.registerCommand('indentation-level-movement.selectUp', () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      new IndentationLevelMover(editor).selectUp();
     }
-  );
+  });
 
-  context.subscriptions.push(indentationLevelMover);
   context.subscriptions.push(moveDown);
   context.subscriptions.push(moveUp);
   context.subscriptions.push(moveRight);
@@ -73,27 +67,22 @@ export function activate(context: ExtensionContext) {
 export function deactivate() {}
 
 class IndentationLevelMover {
-  public moveUp() {
-    let editor = window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
+  editor: TextEditor;
 
-    let currentLineNumber: number | undefined = editor.selection.start.line;
-    if (currentLineNumber === undefined) { return; }
-    let currentLevel: number = this.indentationLevelForLine(currentLineNumber);
-    let nextLine: number = this.findPreviousLine(currentLineNumber, currentLevel);
+  constructor(editor: TextEditor) {
+    this.editor = editor;
+  }
+
+  public moveUp() {
+    let currentLineNumber = this.editor.selection.active.line;
+    let currentLevel = this.indentationLevelForLine(currentLineNumber);
+    let nextLine = this.findPreviousLine(currentLineNumber, currentLevel);
 
     this.move(nextLine);
   }
 
   public moveOut() {
-    let editor = window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-
-    let currentLineNumber: number | undefined = editor.selection.start.line;
+    let currentLineNumber: number | undefined = this.editor.selection.start.line;
     if (currentLineNumber === undefined) { return; }
     let currentLevel: number = this.indentationLevelForLine(currentLineNumber);
     let nextLine: number = this.findParentLine(currentLineNumber, currentLevel);
@@ -102,81 +91,54 @@ class IndentationLevelMover {
   }
 
   public moveDown() {
-    let editor = window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-
-    let currentLineNumber = editor.selection.start.line;
+    let currentLineNumber = this.editor.selection.active.line;
     let currentLevel = this.indentationLevelForLine(currentLineNumber);
-    let nextLine: number = this.findNextLine(currentLineNumber, currentLevel);
-
-    this.move(nextLine);
+    let nextLine = this.findNextLine(currentLineNumber, currentLevel);
+    if (nextLine) {
+      this.move(nextLine);
+    }
   }
 
   public moveRight() {
-    let editor = window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-
-    let currentPosition = editor.selection.active.character;
-    let indentationPosition = this.indentationLevelForLine(
-      editor.selection.start.line
-    );
+    let currentPosition = this.editor.selection.active.character;
+    let indentationPosition = this.indentationLevelForLine(this.editor.selection.start.line);
 
     if (currentPosition < indentationPosition) {
-      if (editor.selections.length > 1) {
-        commands.executeCommand("cursorWordEndRight").then(() => {
-          commands.executeCommand("cursorWordStartLeft");
+      if (this.editor.selections.length > 1) {
+        commands.executeCommand('cursorWordEndRight').then(() => {
+          commands.executeCommand('cursorWordStartLeft');
         });
       } else {
-        let position = new Position(
-          editor.selection.active.line,
-          indentationPosition
-        );
-        editor.selection = new Selection(position, position);
+        let position = new Position(this.editor.selection.active.line, indentationPosition);
+        this.editor.selection = new Selection(position, position);
       }
     } else {
-      commands.executeCommand("cursorWordEndRight");
+      commands.executeCommand('cursorWordEndRight');
     }
   }
 
   public selectUp() {
-    let editor = window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-    let startPoint = editor.selection.start;
+    let startPoint = this.editor.selection.anchor;
     this.moveUp();
-    let endPoint = editor.selection.end;
-    editor.selection = new Selection(startPoint, endPoint);
+    let endPoint = this.editor.selection.active;
+    this.editor.selection = new Selection(startPoint, endPoint);
   }
 
   public selectDown() {
-    let editor = window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-
-    let startPoint = editor.selection.start;
+    let startPoint = this.editor.selection.anchor;
     this.moveDown();
-    let endPoint = editor.selection.end;
-    editor.selection = new Selection(startPoint, endPoint);
+    let endPoint = this.editor.selection.active;
+    this.editor.selection = new Selection(startPoint, endPoint);
   }
 
   public move(toLine: number) {
-    let editor: TextEditor | undefined = window.activeTextEditor;
-    if (editor === undefined) {
-      return;
-    }
-    let currentCharacter = editor.selection.start.character;
-    let position = editor.selection.active;
+    let currentCharacter = this.editor.selection.anchor.character;
+    let position = this.editor.selection.active;
     let newPosition = position.with(toLine, currentCharacter);
     let selection = new Selection(newPosition, newPosition);
 
-    editor.selection = selection;
-    editor.revealRange(new Range(newPosition, newPosition));
+    this.editor.selection = selection;
+    this.editor.revealRange(new Range(newPosition, newPosition));
   }
 
   public indentationLevelForLine(lineToCheck: number): number {
@@ -185,7 +147,7 @@ class IndentationLevelMover {
       return -1;
     }
     let line = editor.document.lineAt(lineToCheck);
-    let tabSize: number | undefined = isNumber(editor.options.tabSize) ? editor.options.tabSize : 4;
+    let tabSize: number | undefined = typeof editor.options.tabSize === 'number' ? editor.options.tabSize : 4;
 
     if (line.isEmptyOrWhitespace || line.text.startsWith("//", line.firstNonWhitespaceCharacterIndex)) {
       return -1;
@@ -203,57 +165,77 @@ class IndentationLevelMover {
     }
   }
 
-  public findNextLine(currentLineNumber: number, currentIndentationLevel: number): number {
-    let editor: TextEditor | undefined = window.activeTextEditor;
-    if (editor === undefined) {
-      return 0;
-    }
-
-    if (currentLineNumber === editor.document.lineCount - 1) {
-      return 0;
-    }
-
-    var gap =
-      this.indentationLevelForLine(currentLineNumber + 1) !==
-      currentIndentationLevel
-        ? true
-        : false;
-
-    for (
-      let lineNumber = currentLineNumber + 1;
-      lineNumber < editor.document.lineCount;
-      lineNumber++
-    ) {
-      let indentationForLine = this.indentationLevelForLine(lineNumber);
-
-      if (gap && indentationForLine === currentIndentationLevel) {
-        return lineNumber;
-      } else if (!gap && indentationForLine !== currentIndentationLevel) {
-        return lineNumber - 1;
-      }
-    }
-
-    return editor.document.lineCount - 1;
+  private emptyLine(lineNumber: number) {
+    const line = this.editor.document.lineAt(lineNumber);
+    return line.isEmptyOrWhitespace;
   }
+
+  private findNextLine(currentLineNumber: number, currentIndentationLevel: number) {
+      const endLineNumber = this.editor.document.lineCount - 1;
+      if (currentLineNumber === endLineNumber) {
+        return;
+      }
+      const nextLineNumber = currentLineNumber + 1;
+      const jumpingOverSpace =
+        this.indentationLevelForLine(nextLineNumber) !== currentIndentationLevel ||
+        this.emptyLine(nextLineNumber);
+
+      for (let lineNumber = nextLineNumber; lineNumber <= endLineNumber; lineNumber++) {
+        let indentationForLine = this.indentationLevelForLine(lineNumber);
+
+        if (
+          jumpingOverSpace &&
+          indentationForLine === currentIndentationLevel &&
+          !this.emptyLine(lineNumber)
+        ) {
+          return lineNumber;
+        } else if (
+          !jumpingOverSpace &&
+          (indentationForLine !== currentIndentationLevel || this.emptyLine(lineNumber))
+        ) {
+          return lineNumber - 1;
+        } else if (
+          !jumpingOverSpace &&
+          indentationForLine === currentIndentationLevel &&
+          lineNumber === endLineNumber
+        ) {
+          return lineNumber;
+        }
+      }
+
+      return;
+    }
 
   public findPreviousLine(currentLineNumber: number, currentIndentationLevel: number): number {
     if (currentLineNumber === 0) {
       return 0;
     }
 
-    var gap =
-      this.indentationLevelForLine(currentLineNumber - 1) !==
-      currentIndentationLevel
-        ? true
-        : false;
+    const previousLineNumber = currentLineNumber - 1;
+    const jumpingOverSpace =
+      this.indentationLevelForLine(previousLineNumber) !== currentIndentationLevel ||
+      this.emptyLine(previousLineNumber);
 
-    for (let lineNumber = currentLineNumber - 1; lineNumber > 0; lineNumber--) {
+    for (let lineNumber = previousLineNumber; lineNumber >= 0; lineNumber--) {
       let indentationForLine = this.indentationLevelForLine(lineNumber);
 
-      if (gap && indentationForLine === currentIndentationLevel) {
+      if (
+        jumpingOverSpace &&
+        indentationForLine === currentIndentationLevel &&
+        !this.emptyLine(lineNumber)
+      ) {
         return lineNumber;
-      } else if (!gap && indentationForLine !== currentIndentationLevel) {
+      } else if (
+        !jumpingOverSpace &&
+        (indentationForLine !== currentIndentationLevel || this.emptyLine(lineNumber))
+      ) {
         return lineNumber + 1;
+      } else if (
+        !jumpingOverSpace &&
+        indentationForLine === currentIndentationLevel &&
+        lineNumber === 0
+      ) {
+        return lineNumber;
       }
     }
 
