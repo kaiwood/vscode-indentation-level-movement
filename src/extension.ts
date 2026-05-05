@@ -107,7 +107,7 @@ class IndentationLevelMover {
     this.editor.selection = new Selection(startPoint, endPoint);
   }
 
-  private move(toLine: number) {
+  private move(toLine: number | undefined) {
     let currentCharacter = this.editor.selection.anchor.character;
     let position = this.editor.selection.active;
     let newPosition = position.with(toLine, currentCharacter);

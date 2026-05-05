@@ -1,7 +1,10 @@
 .vscode/**
+.vscode-test.js
 .vscode-test/**
 out/test/**
+out/src/test/**
 test/**
+src/test/**
 src/**
 **/*.map
 .gitignore
