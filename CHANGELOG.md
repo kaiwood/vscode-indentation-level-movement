@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.0.0
+
+Bugfixes and modernization.
+
 ## 1.2.0
 
 When determining the indentation level, ignore lines containing only whitespace (#2)
