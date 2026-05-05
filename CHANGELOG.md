@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.0.1
+
+Restore the extension logo.
+
 ## 2.0.0
 
 Bugfixes and modernization.
