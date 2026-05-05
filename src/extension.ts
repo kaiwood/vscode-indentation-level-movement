@@ -28,6 +28,13 @@ export function activate(context: ExtensionContext) {
     }
   });
 
+  const moveOut = commands.registerCommand('indentation-level-movement.moveOut', () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      new IndentationLevelMover(editor).moveOut();
+    }
+  });
+
   const selectDown = commands.registerCommand('indentation-level-movement.selectDown', () => {
     const editor = window.activeTextEditor;
     if (editor) {
@@ -45,6 +52,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(moveDown);
   context.subscriptions.push(moveUp);
   context.subscriptions.push(moveRight);
+  context.subscriptions.push(moveOut);
   context.subscriptions.push(selectDown);
   context.subscriptions.push(selectUp);
 }
@@ -71,6 +79,14 @@ class IndentationLevelMover {
     let currentLineNumber = this.editor.selection.active.line;
     let currentLevel = this.indentationLevelForLine(currentLineNumber);
     let nextLine = this.findNextLine(currentLineNumber, currentLevel);
+
+    this.move(nextLine);
+  }
+
+  public moveOut() {
+    let currentLineNumber = this.editor.selection.active.line;
+    let currentLevel = this.indentationLevelForLine(currentLineNumber);
+    let nextLine = this.findParentLine(currentLineNumber, currentLevel);
 
     this.move(nextLine);
   }
@@ -192,6 +208,22 @@ class IndentationLevelMover {
         indentationForLine === currentIndentationLevel &&
         lineNumber === 0
       ) {
+        return lineNumber;
+      }
+    }
+
+    return;
+  }
+
+  private findParentLine(currentLineNumber: number, currentIndentationLevel: number) {
+    if (currentLineNumber === 0) {
+      return;
+    }
+
+    for (let lineNumber = currentLineNumber - 1; lineNumber >= 0; lineNumber--) {
+      let indentationForLine = this.indentationLevelForLine(lineNumber);
+
+      if (indentationForLine < currentIndentationLevel && !this.emptyLine(lineNumber)) {
         return lineNumber;
       }
     }

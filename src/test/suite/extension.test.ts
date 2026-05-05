@@ -70,6 +70,34 @@ suite('Indentation Level Movement', () => {
     assert.strictEqual(editor.selection.active.character, 4);
   });
 
+  test('moves out to the parent indentation level above', async () => {
+    await openTestEditor(5, 4);
+
+    const editor = await execute('indentation-level-movement.moveOut');
+
+    assert.strictEqual(editor.selection.active.line, 4);
+    assert.strictEqual(editor.selection.active.character, 4);
+    assert.strictEqual(editor.selection.isEmpty, true);
+  });
+
+  test('moves out preserving the current character position', async () => {
+    await openTestEditor(5, 11);
+
+    const editor = await execute('indentation-level-movement.moveOut');
+
+    assert.strictEqual(editor.selection.active.line, 4);
+    assert.strictEqual(editor.selection.active.character, 11);
+  });
+
+  test('keeps the cursor in place when no parent indentation exists', async () => {
+    await openTestEditor(8, 3);
+
+    const editor = await execute('indentation-level-movement.moveOut');
+
+    assert.strictEqual(editor.selection.active.line, 8);
+    assert.strictEqual(editor.selection.active.character, 3);
+  });
+
   test('selects down from the original anchor to the moved position', async () => {
     await openTestEditor(1, 4);
 

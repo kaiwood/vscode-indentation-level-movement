@@ -2,7 +2,7 @@
   "name": "indentation-level-movement",
   "displayName": "Indentation Level Movement",
   "description": "Fast and efficient vertical movement.",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "publisher": "kaiwood",
   "contributors": [
     "juko"
@@ -34,6 +34,10 @@
       {
         "command": "indentation-level-movement.moveRight",
         "title": "Indentation Level Move Right"
+      },
+      {
+        "command": "indentation-level-movement.moveOut",
+        "title": "Indentation Level Move Out"
       },
       {
         "command": "indentation-level-movement.selectDown",
