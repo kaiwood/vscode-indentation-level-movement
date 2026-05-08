@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.1.1
+
+Polish project build files
+
 ## 2.1.0
 
 Add a Move Out command to jump to the previous less-indented line.
