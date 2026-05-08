@@ -24,7 +24,7 @@ export function activate(context: ExtensionContext) {
   const moveRight = commands.registerCommand('indentation-level-movement.moveRight', () => {
     const editor = window.activeTextEditor;
     if (editor) {
-      new IndentationLevelMover(editor).moveRight();
+      return new IndentationLevelMover(editor).moveRight();
     }
   });
 
@@ -49,12 +49,20 @@ export function activate(context: ExtensionContext) {
     }
   });
 
+  const selectRight = commands.registerCommand('indentation-level-movement.selectRight', () => {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      return new IndentationLevelMover(editor).selectRight();
+    }
+  });
+
   context.subscriptions.push(moveDown);
   context.subscriptions.push(moveUp);
   context.subscriptions.push(moveRight);
   context.subscriptions.push(moveOut);
   context.subscriptions.push(selectDown);
   context.subscriptions.push(selectUp);
+  context.subscriptions.push(selectRight);
 }
 
 // this method is called when your extension is deactivated
@@ -92,21 +100,11 @@ class IndentationLevelMover {
   }
 
   public moveRight() {
-    let currentPosition = this.editor.selection.active.character;
-    let indentationPosition = this.indentationLevelForLine(this.editor.selection.start.line);
+    return this.moveRightWithDefaultCommand('cursorWordEndRight', false);
+  }
 
-    if (currentPosition < indentationPosition) {
-      if (this.editor.selections.length > 1) {
-        commands.executeCommand('cursorWordEndRight').then(() => {
-          commands.executeCommand('cursorWordStartLeft');
-        });
-      } else {
-        let position = new Position(this.editor.selection.active.line, indentationPosition);
-        this.editor.selection = new Selection(position, position);
-      }
-    } else {
-      commands.executeCommand('cursorWordEndRight');
-    }
+  public selectRight() {
+    return this.moveRightWithDefaultCommand('cursorWordEndRightSelect', true);
   }
 
   public selectUp() {
@@ -131,6 +129,47 @@ class IndentationLevelMover {
 
     this.editor.selection = selection;
     this.editor.revealRange(new Range(newPosition, newPosition));
+  }
+
+  private moveRightWithDefaultCommand(defaultCommand: string, select: boolean) {
+    const selections = this.editor.selections;
+    const newSelections = selections.slice();
+    const defaultSelections: { index: number; selection: Selection }[] = [];
+
+    selections.forEach((selection, index) => {
+      const indentationPosition = this.indentationLevelForLine(selection.active.line);
+      if (selection.active.character < indentationPosition) {
+        newSelections[index] = this.selectionAtIndentation(selection, indentationPosition, select);
+      } else {
+        defaultSelections.push({ index, selection });
+      }
+    });
+
+    if (defaultSelections.length === 0) {
+      this.editor.selections = newSelections;
+      return;
+    }
+
+    if (defaultSelections.length === selections.length) {
+      return commands.executeCommand(defaultCommand);
+    }
+
+    this.editor.selections = defaultSelections.map(({ selection }) => selection);
+    return commands.executeCommand(defaultCommand).then(() => {
+      this.editor.selections.forEach((selection, defaultSelectionIndex) => {
+        newSelections[defaultSelections[defaultSelectionIndex].index] = selection;
+      });
+      this.editor.selections = newSelections;
+    });
+  }
+
+  private selectionAtIndentation(
+    selection: Selection,
+    indentationPosition: number,
+    select: boolean
+  ) {
+    const position = new Position(selection.active.line, indentationPosition);
+    return new Selection(select ? selection.anchor : position, position);
   }
 
   private indentationLevelForLine(lineToCheck: number) {

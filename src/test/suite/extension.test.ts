@@ -70,6 +70,55 @@ suite('Indentation Level Movement', () => {
     assert.strictEqual(editor.selection.active.character, 4);
   });
 
+  test('moves right with default behavior at the first non-whitespace character', async () => {
+    await openTestEditor(5, 4);
+
+    const editor = await execute('indentation-level-movement.moveRight');
+
+    assert.strictEqual(editor.selection.active.line, 5);
+    assert.strictEqual(editor.selection.active.character, 10);
+  });
+
+  test('moves multiple cursors right to each first non-whitespace character', async () => {
+    const editor = await openTestEditor(1, 0);
+    const firstPosition = new vscode.Position(1, 0);
+    const secondPosition = new vscode.Position(5, 0);
+    editor.selections = [
+      new vscode.Selection(firstPosition, firstPosition),
+      new vscode.Selection(secondPosition, secondPosition)
+    ];
+
+    await execute('indentation-level-movement.moveRight');
+
+    assert.strictEqual(editor.selections.length, 2);
+    assert.strictEqual(editor.selections[0].active.line, 1);
+    assert.strictEqual(editor.selections[0].active.character, 2);
+    assert.strictEqual(editor.selections[0].isEmpty, true);
+    assert.strictEqual(editor.selections[1].active.line, 5);
+    assert.strictEqual(editor.selections[1].active.character, 4);
+    assert.strictEqual(editor.selections[1].isEmpty, true);
+  });
+
+  test('moves mixed cursors right with indentation and default behavior', async () => {
+    const editor = await openTestEditor(1, 0);
+    const firstPosition = new vscode.Position(1, 0);
+    const secondPosition = new vscode.Position(5, 4);
+    editor.selections = [
+      new vscode.Selection(firstPosition, firstPosition),
+      new vscode.Selection(secondPosition, secondPosition)
+    ];
+
+    await execute('indentation-level-movement.moveRight');
+
+    assert.strictEqual(editor.selections.length, 2);
+    assert.strictEqual(editor.selections[0].active.line, 1);
+    assert.strictEqual(editor.selections[0].active.character, 2);
+    assert.strictEqual(editor.selections[0].isEmpty, true);
+    assert.strictEqual(editor.selections[1].active.line, 5);
+    assert.strictEqual(editor.selections[1].active.character, 10);
+    assert.strictEqual(editor.selections[1].isEmpty, true);
+  });
+
   test('moves out to the parent indentation level above', async () => {
     await openTestEditor(5, 4);
 
@@ -120,5 +169,53 @@ suite('Indentation Level Movement', () => {
     assert.strictEqual(editor.selection.active.line, 2);
     assert.strictEqual(editor.selection.active.character, 4);
     assert.strictEqual(editor.selection.isEmpty, false);
+  });
+
+  test('selects right to the first non-whitespace character', async () => {
+    await openTestEditor(5, 0);
+
+    const editor = await execute('indentation-level-movement.selectRight');
+
+    assert.strictEqual(editor.selection.anchor.line, 5);
+    assert.strictEqual(editor.selection.anchor.character, 0);
+    assert.strictEqual(editor.selection.active.line, 5);
+    assert.strictEqual(editor.selection.active.character, 4);
+    assert.strictEqual(editor.selection.isEmpty, false);
+  });
+
+  test('selects right with default behavior at the first non-whitespace character', async () => {
+    await openTestEditor(5, 4);
+
+    const editor = await execute('indentation-level-movement.selectRight');
+
+    assert.strictEqual(editor.selection.anchor.line, 5);
+    assert.strictEqual(editor.selection.anchor.character, 4);
+    assert.strictEqual(editor.selection.active.line, 5);
+    assert.strictEqual(editor.selection.active.character, 10);
+    assert.strictEqual(editor.selection.isEmpty, false);
+  });
+
+  test('selects multiple cursors right to each first non-whitespace character', async () => {
+    const editor = await openTestEditor(1, 0);
+    const firstPosition = new vscode.Position(1, 0);
+    const secondPosition = new vscode.Position(5, 0);
+    editor.selections = [
+      new vscode.Selection(firstPosition, firstPosition),
+      new vscode.Selection(secondPosition, secondPosition)
+    ];
+
+    await execute('indentation-level-movement.selectRight');
+
+    assert.strictEqual(editor.selections.length, 2);
+    assert.strictEqual(editor.selections[0].anchor.line, 1);
+    assert.strictEqual(editor.selections[0].anchor.character, 0);
+    assert.strictEqual(editor.selections[0].active.line, 1);
+    assert.strictEqual(editor.selections[0].active.character, 2);
+    assert.strictEqual(editor.selections[0].isEmpty, false);
+    assert.strictEqual(editor.selections[1].anchor.line, 5);
+    assert.strictEqual(editor.selections[1].anchor.character, 0);
+    assert.strictEqual(editor.selections[1].active.line, 5);
+    assert.strictEqual(editor.selections[1].active.character, 4);
+    assert.strictEqual(editor.selections[1].isEmpty, false);
   });
 });

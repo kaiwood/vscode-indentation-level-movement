@@ -46,6 +46,10 @@
       {
         "command": "indentation-level-movement.selectUp",
         "title": "Indentation Level Select Up"
+      },
+      {
+        "command": "indentation-level-movement.selectRight",
+        "title": "Indentation Level Select Right"
       }
     ],
     "keybindings": [
@@ -76,6 +80,12 @@
         "command": "indentation-level-movement.selectUp",
         "key": "ctrl-shift-up",
         "mac": "alt-shift-up"
+      },
+      {
+        "command": "indentation-level-movement.selectRight",
+        "key": "ctrl-shift-right",
+        "mac": "alt-shift-right",
+        "when": "editorTextFocus"
       }
     ]
   },
