@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.2.0
+
+Fix right movement and selection behavior for multiple cursors.
+
 ## 2.1.1
 
 Polish project build files
